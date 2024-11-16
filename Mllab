@@ -1,0 +1,276 @@
+#exp1
+import pandas as pd
+import numpy as np
+data = pd.DataFrame({
+    'Outlook': ['Sunny', 'Sunny', 'Overcast', 'Rainy', 'Rainy', 'Rainy', 'Overcast', 'Sunny', 'Sunny', 'Rainy',
+                'Sunny', 'Overcast', 'Overcast'],
+    'Temperature': ['Hot', 'Hot', 'Hot', 'Mild', 'Cool', 'Cool', 'Cool', 'Mild', 'Cool', 'Mild', 'Mild', 'Hot', 'Mild'],
+    'Humidity': ['High', 'High', 'High', 'High', 'Normal', 'Normal', 'Normal', 'High', 'Normal', 'Normal', 'Normal', 'High', 'High'],
+    'Windy': [False, True, False, False, False, True, True, False, False, True, True, False, True],
+    'Play Tennis': ['No', 'No', 'Yes', 'Yes', 'Yes', 'No', 'Yes', 'No', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes']})
+def entropy(column):
+    counts = column.value_counts()
+    probabilities = counts / len(column)
+    return -np.sum(probabilities * np.log2(probabilities))
+def information_gain(data, feature, target):
+    total_entropy = entropy(data[target])
+    feature_entropy = 0
+    for value in data[feature].unique():
+        subset = data[data[feature] == value]
+        feature_entropy += (len(subset) / len(data)) * entropy(subset[target])
+    return total_entropy - feature_entropy
+def best_feature(data, features, target):
+    gains = {feature: information_gain(data, feature, target) for feature in features}
+    return max(gains, key=gains.get)
+def build_tree(data, features, target):
+    classes = data[target].unique()
+    if len(classes) == 1:
+        return classes[0]
+    if not features:
+        return data[target].mode()[0]
+    best = best_feature(data, features, target)
+    tree = {best: {}}
+    for value in data[best].unique():
+        subset = data[data[best] == value]
+        new_features = [f for f in features if f != best]
+        tree[best][value] = build_tree(subset, new_features, target)
+    return tree
+features = ['Outlook', 'Temperature', 'Humidity', 'Windy']
+target = 'Play Tennis'
+decision_tree = build_tree(data, features, target)
+print("Decision Tree:")
+print(decision_tree)
+def classify(tree, sample):
+    if not isinstance(tree, dict):
+        return tree
+    feature = list(tree.keys())[0]
+    feature_value = sample[feature]
+    subtree = tree[feature].get(feature_value)
+    if subtree is None:
+        return None
+    return classify(subtree, sample)
+new_sample = {'Outlook': 'Sunny', 'Temperature': 'Cool', 'Humidity': 'High', 'Windy': False}
+classification = classify(decision_tree, new_sample)
+print(f"Classification for new sample: {classification}")
+
+#exp2
+import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, classification_report
+iris = load_iris()
+X = iris.data
+y = iris.target
+X = X[y != 2]
+y = y[y != 2]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+model = SVC(kernel='rbf', gamma='scale', C=1.0)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+report = classification_report(y_test, y_pred, target_names=iris.target_names[:2])
+print(f"Accuracy: {accuracy:.2f}")
+print("Classification Report:")
+print(report)
+new_sample = np.array([[5.1, 3.5, 1.4, 0.2]])
+new_prediction = model.predict(new_sample)
+print(f"New Sample Classification: {iris.target_names[new_prediction][0]}")
+
+#exp3
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression, Ridge
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.preprocessing import PolynomialFeatures
+np.random.seed(0)
+X = 2 * np.random.rand(100, 1)
+y = 4 + 3 * X + 1.5 * X**2 + np.random.randn(100, 1)
+plt.scatter(X, y, color='blue', label='Data points')
+plt.xlabel('Feature')
+plt.ylabel('Target')
+plt.title('Synthetic Dataset')
+plt.legend()
+plt.show()
+lin_reg = LinearRegression()
+lin_reg.fit(X, y)
+y_pred_lin = lin_reg.predict(X)
+mse_lin = mean_squared_error(y, y_pred_lin)
+r2_lin = r2_score(y, y_pred_lin)
+print(f"Linear Regression MSE: {mse_lin:.2f}")
+print(f"Linear Regression R² Score: {r2_lin:.2f}")
+poly_features = PolynomialFeatures(degree=2, include_bias=False)
+X_poly = poly_features.fit_transform(X)
+poly_reg = LinearRegression()
+poly_reg.fit(X_poly, y)
+y_pred_poly = poly_reg.predict(X_poly)
+mse_poly = mean_squared_error(y, y_pred_poly)
+r2_poly = r2_score(y, y_pred_poly)
+print(f"Polynomial Regression MSE: {mse_poly:.2f}")
+print(f"Polynomial Regression R² Score: {r2_poly:.2f}")
+plt.scatter(X, y, color='blue', label='Data points')
+X_range = np.linspace(X.min(), X.max(), 100).reshape(-1, 1)
+X_range_poly = poly_features.transform(X_range)
+y_range_poly = poly_reg.predict(X_range_poly)
+plt.plot(X_range, y_range_poly, color='red', label='Polynomial Fit')
+plt.xlabel('Feature')
+plt.ylabel('Target')
+plt.title('Polynomial Regression')
+plt.legend()
+plt.show()
+ridge_reg = Ridge(alpha=1.0)
+ridge_reg.fit(X, y)
+y_pred_ridge = ridge_reg.predict(X)
+mse_ridge = mean_squared_error(y, y_pred_ridge)
+r2_ridge = r2_score(y, y_pred_ridge)
+print(f"Ridge Regression MSE: {mse_ridge:.2f}")
+print(f"Ridge Regression R² Score: {r2_ridge:.2f}")
+
+#exp4
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
+import numpy as np
+iris = load_iris()
+X = iris.data
+y = iris.target
+X = X[y != 2]
+y = y[y != 2]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+knn = KNeighborsClassifier(n_neighbors=3)
+knn.fit(X_train, y_train)
+y_pred = knn.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
+print(f"Accuracy: {accuracy:.2f}")
+print(f"Precision: {precision:.2f}")
+print(f"Recall: {recall:.2f}")
+print(f"F1-Score: {f1:.2f}")
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred, target_names=iris.target_names[:2]))
+new_sample = np.array([[5.0, 3.6, 1.4, 0.2]])
+new_prediction = knn.predict(new_sample)
+print(f"New Sample Classification: {iris.target_names[new_prediction][0]}")
+
+#exp5
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from pandas import DataFrame
+from sklearn.datasets import load_iris
+from sklearn.mixture import GaussianMixture
+iris = load_iris()
+X = iris.data[:, :2]
+d = pd.DataFrame(X)
+plt.scatter(d[0], d[1])
+plt.show()
+gmm = GaussianMixture(n_components = 3)
+gmm.fit(d)
+labels = gmm.predict(d)
+d['labels']= labels
+d0 = d[d['labels']== 0]
+d1 = d[d['labels']== 1]
+d2 = d[d['labels']== 2]
+plt.scatter(d0[0], d0[1], c ='r')
+plt.scatter(d1[0], d1[1], c ='yellow')
+plt.scatter(d2[0], d2[1], c ='g')
+plt.show()
+
+#exp6
+from sklearn import datasets
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+import seaborn as sns
+iris = datasets.load_iris()
+df = pd.DataFrame(iris['data'], columns = iris['feature_names'])
+df.head()
+scalar = StandardScaler()
+scaled_data = pd.DataFrame(scalar.fit_transform(df))
+scaled_data
+pca = PCA(n_components = 3)
+pca.fit(scaled_data)
+data_pca = pca.transform(scaled_data)
+data_pca = pd.DataFrame(data_pca,columns=['PC1','PC2','PC3'])
+data_pca.head()
+sns.heatmap(data_pca.corr())
+
+#exp7
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.datasets import load_iris
+from sklearn.decomposition import PCA
+iris = load_iris()
+X = iris.data
+y = iris.target
+kmeans = KMeans(n_clusters=3, random_state=42)
+kmeans.fit(X)
+clusters = kmeans.labels_
+pca = PCA(n_components=2)
+X_reduced = pca.fit_transform(X)
+plt.figure(figsize=(8, 6))
+plt.scatter(X_reduced[:, 0], X_reduced[:, 1], c=clusters, cmap='viridis', s=50, label='Clustered')
+plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], marker='X', label='Centroids')
+plt.title("K-Means Clustering on Iris Dataset")
+plt.legend()
+plt.show()
+
+#exp8
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+df=pd.read_csv('/content/play_tennis.csv')
+encoder=LabelEncoder()
+for column in df.columns:
+  df[column]=encoder.fit_transform(df[column])
+print("\n Encoder Dataset:\n",df)
+X=df.drop(columns='play')
+Y=df['play']
+x_train,x_test,y_train,y_test=train_test_split(X,Y,test_size=0.2,random_state=42)
+classifier=GaussianNB()
+classifier.fit(x_train,y_train)
+y_pred=classifier.predict(x_test)
+accuracy=accuracy_score(y_test,y_pred)
+print("\nAccuracy :",accuracy)
+
+#exp9
+import numpy as np
+x=np.array(([2,9],[1,5],[3,6]),dtype=float)
+y=np.array(([92],[86],[89]),dtype=float)
+x=x/np.amax(x,axis=0)
+y=y/100
+def sigmoid(x):
+  return 1/(1+np.exp(-x))
+def derivatives_sigmoid(x):
+  return x*(1-x)
+epoch=5000
+lr=0.1
+inputlayer_neurons=2
+hiddenlayer_neurons=3
+output_neurons=1
+wh=np.random.uniform(size=(inputlayer_neurons,hiddenlayer_neurons))
+bh=np.random.uniform(size=(1,hiddenlayer_neurons))
+wout=np.random.uniform(size=(hiddenlayer_neurons,output_neurons))
+bout=np.random.uniform(size=(1,output_neurons))
+for i in range(epoch):
+  hinp1=np.dot(x,wh)
+  hinp=hinp1+bh
+  hlayer_act=sigmoid(hinp)
+  outinp1=np.dot(hlayer_act,wout)
+  outinp=outinp1+bout
+  output=sigmoid(outinp)
+  EO=y-output
+  outgrad=derivatives_sigmoid(output)
+  d_output=EO*outgrad
+  EH=d_output.dot(wout.T)
+  hiddengrad=derivatives_sigmoid(hlayer_act)
+  d_hiddenlayer=EH*hiddengrad
+  wout+=hlayer_act.T.dot(d_output)*lr
+  wh+=x.T.dot(d_hiddenlayer)*lr
+print("Input: \n"+str(x))
+print("Actual Output: \n"+str(y))
+print("Predicted Output: \n",output)
