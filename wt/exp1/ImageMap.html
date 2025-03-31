@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive India Map</title>
+</head>
+<body>
+  <h2>Interactive Map of India</h2>
+  <img src="./india-map.jpg" usemap="#indiaMap" alt="Map of India">
+
+  <map name="indiaMap">
+    <!-- Tamil Nadu: Using a circle for the state area -->
+    <area shape="circle" coords="230,640,45" href="TamilNadu.html" alt="Tamil Nadu" title="Tamil Nadu">
+    
+    <!-- Karnataka: Using a rectangle for the state area -->
+    <area shape="rect" coords="150,520,210,560" href="Karnataka.html" alt="Karnataka" title="Karnataka">
+    
+    <!-- Andhra Pradesh: Using a polygon for a more irregular shape -->
+    <area shape="poly" coords="250,500,270,520,260,550,230,540,240,510" href="AndhraPradesh.html" alt="Andhra Pradesh" title="Andhra Pradesh">
+    
+    <!-- Kerala: Using a rectangle for the state area -->
+    <area shape="rect" coords="140,680,170,720" href="Kerala.html" alt="Kerala" title="Kerala">
+  </map>
+</body>
+</html>
