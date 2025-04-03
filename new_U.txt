@@ -1,0 +1,256 @@
+1:
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<meta charset="UTF-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<title>Store Checkout</title> 
+<style> 
+body { font-family: Arial, sans-serif; text-align: center; margin: 20px; } 
+.product { border: 1px solid #ccc; padding: 10px; display: inline-block; margin: 10px; } 
+button { background: green; color: white; border: none; padding: 8px; cursor: pointer; 
+margin-top: 5px; } 
+</style></head><body> 
+<h2>Online Store</h2> 
+<div class="product"> 
+<h3>Product 1</h3><p>₹500</p><button onclick="add(500)">Add to Cart</button> 
+</div> 
+<div class="product"> 
+<h3>Product 2</h3><p>₹750</p><button onclick="add(750)">Add to Cart</button> 
+</div> 
+<h3>Cart Total: ₹<span id="total">0</span></h3> 
+<button onclick="checkout()">Checkout</button> 
+<script> 
+let total = 0; 
+function add(price) { 
+total += price; 
+document.getElementById("total").textContent = total; 
+} 
+function checkout() { 
+alert(total ? Thank you! Total: ₹${total} : "Cart is empty!"); 
+total = 0; 
+document.getElementById("total").textContent = total; 
+} 
+</script> 
+</body> 
+</html>
+
+2:
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<meta charset="UTF-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<title>Simple Website</title> 
+<style> 
+body { font-family: Arial, sans-serif; text-align: center; margin: 0; } 
+header, footer { background: #007bff; color: white; padding: 15px; } 
+footer { background: #333; } 
+nav a { color: white; text-decoration: none; margin: 0 15px; font-weight: bold; } 
+section { padding: 50px; } 
+button { background: #28a745; color: white; border: none; padding: 10px; cursor: 
+pointer; } 
+button:hover { background: #218838; } 
+</style></head><body> <header> <h1>My Website</h1> 
+<nav><a href="#home">Home</a> 
+<a href="#about">About</a> 
+<a href="#contact">Contact</a></nav></header> 
+<section id="home"> 
+<h2>Welcome</h2> 
+<p>This is a simple website.</p> 
+<button onclick="alert('Welcome to My Website!')">Click Me</button> 
+</section>    <section id="about"><h2>About Us</h2> 
+<p>We love web development.</p> 
+</section><section id="contact"> <h2>Contact</h2> 
+<p>Email: example@example.com</p> 
+</section>    <footer> 
+<p>&copy; 2025 My Website</p> 
+</footer></body></html> 
+
+3:
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta 
+name="viewport" content="width=device-width, initial-scale=1.0"> <title>Simple 
+Chat</title><style> body { font-family: Arial, sans-serif; display: flex; justify-content: 
+center; align-items: center; height: 100vh; background: #f4f4f4; margin: 0; } 
+.chat-container { width: 300px; background: white; border-radius: 10px; box-shadow: 0 
+0 10px gray; padding: 15px; text-align: center; } 
+.chat-box { height: 250px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; 
+background: #f9f9f9; display: flex; flex-direction: column; } 
+.chat-input { display: flex; margin-top: 10px; } 
+input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 5px; } 
+button { padding: 8px; background: green; color: white; border: none; margin-left: 5px; 
+border-radius: 5px; cursor: pointer; } 
+.message { padding: 8px; border-radius: 5px; margin: 5px 0; max-width: 80%; word
+wrap: break-word; } 
+.user { background: blue; color: white; align-self: flex-end; } 
+.bot { background: #ccc; align-self: flex-start; }</style></head><body><div 
+class="chat-container"><h2>Chat</h2><div class="chat-box" id="chat"></div>class="chat
+input"><input id="msg" placeholder="Type..."><button onclick="send()">Send</button> 
+</div></div><script>function send() {let chat = document.getElementById("chat"), msg = 
+document.getElementById("msg").value.trim(); 
+if (!msg) return; 
+chat.innerHTML += `<div class='message user'>${msg}</div>`; 
+document.getElementById("msg").value = ""; 
+setTimeout(() => chat.innerHTML += `<div class='message 
+bot'>${reply(msg)}</div>`, 500); chat.scrollTop = chat.scrollHeight;} 
+function reply(text) { let responses = { "hi": "Hello!", "how are you": "I'm good, you?", 
+"bye": "Goodbye!" }; 
+return responses[text.toLowerCase()] || "I don't understand.";} 
+</script></body></html> 
+
+4:
+import React, { useState } from "react"; 
+import "./App.css"; 
+function App() { 
+const [input, setInput] = useState(""); 
+const handleClick = (value) => { 
+setInput(input + value);  }; 
+const clearInput = () => { 
+setInput("");  }; 
+const calculateResult = () => {try { 
+setInput(eval(input).toString()); // Evaluates the expression 
+} catch (error) {  setInput("Error");    }  }; 
+return (<div className="calculator"> 
+<h2>React Calculator</h2> 
+<input type="text" value={input} readOnly /> 
+<div className="buttons"> 
+{["7", "8", "9", "/", "4", "5", "6", "*", "1", "2", "3", "-", "0", ".", "=", "+"].map((btn) => 
+btn === "=" ? ( 
+<button key={btn} onClick={calculateResult}>{btn}</button>) : ( 
+<button key={btn} onClick={() => handleClick(btn)}>{btn}</button> ) 
+)}        
+<button className="clear" onClick={clearInput}>C</button> 
+</div>    </div>  );} 
+export default App; 
+
+5:
+import React, { useState } from "react"; 
+import "./App.css"; 
+function App() { 
+  const candidates = ["Alice", "Bob", "Charlie"]; 
+  const [votes, setVotes] = useState({ Alice: 0, Bob: 0, Charlie: 0 }); 
+  const handleVote = (candidate) => { 
+    setVotes({ ...votes, [candidate]: votes[candidate] + 1 }); 
+  }; 
+  return ( 
+    <div className="voting-app"> 
+      <h2>Voting Application</h2> 
+      <div className="candidates"> 
+        {candidates.map((candidate) => ( 
+          <div key={candidate} className="candidate"> 
+            <h3>{candidate}</h3> 
+            <p>Votes: {votes[candidate]}</p> 
+            <button onClick={() => handleVote(candidate)}>Vote</button> 
+          </div> 
+        ))} 
+      </div> 
+    </div> 
+  ); 
+} 
+ 
+export default App;
+
+6:
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> <meta charset="UTF-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<title>Leap Year Checker</title> 
+<style> 
+body { 
+font-family: Arial, sans-serif; 
+text-align: center; 
+margin-top: 50px;        
+input, button { 
+padding: 10px; 
+margin-top: 10px; 
+font-size: 16px;        
+} 
+}    </style></head><body> 
+<h2>Leap Year Checker</h2> 
+<label>Enter a Year:</label> 
+<input type="number" id="yearInput" placeholder="Enter year"> 
+<button onclick="checkLeapYear()">Check</button> 
+<p id="result"></p>    <script> 
+function isLeapYear(year) { 
+return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);        
+} 
+function checkLeapYear() { 
+let year = document.getElementById("yearInput").value; 
+if (!year) { 
+document.getElementById("result").innerText = "Please enter a valid year."; 
+return;            
+} 
+let resultText = isLeapYear(year) ? `${year} is a Leap Year.` : `${year} is NOT a Leap 
+Year.`; 
+document.getElementById("result").innerText = resultText; 
+}    </script></body></html>
+
+
+7:
+import React, { useState, useEffect } from "react"; 
+import "./App.css"; 
+const BirthdayReminder = () => { 
+  const [birthdays, setBirthdays] = useState([ 
+    { id: 1, name: "John Doe", date: "2024-03-10" }, 
+    { id: 2, name: "Jane Smith", date: "2024-05-15" }, 
+  ]); 
+  const [newName, setNewName] = useState(""); 
+  const [newDate, setNewDate] = useState(""); 
+  const [popup, setPopup] = useState(null); 
+  // Function to add a new birthday 
+  const addBirthday = () => { 
+    if (newName && newDate) { 
+      setBirthdays([...birthdays, { id: Date.now(), name: newName, date: newDate }]); 
+      setNewName(""); 
+      setNewDate("");    } }; 
+  // Function to remove a birthday 
+  const removeBirthday = (id) => { 
+    setBirthdays(birthdays.filter((bday) => bday.id !== id)); 
+  }; 
+  // Function to check if a birthday has passed 
+  const processBirthdays = () => { 
+    const today = new Date(); 
+    let updatedBirthdays = birthdays.map((bday) => { 
+      let bdayDate = new Date(bday.date); 
+      if (bdayDate < today) { 
+        bdayDate.setFullYear(today.getFullYear() + 1); 
+      } 
+      return { ...bday, date: bdayDate.toISOString().split("T")[0] }; 
+    }); 
+    setBirthdays(updatedBirthdays); 
+  }; 
+  // Show pop-up for upcoming birthdays 
+  useEffect(() => { 
+    const today = new Date().toISOString().split("T")[0]; 
+    const upcomingBday = birthdays.find((bday) => bday.date === today); 
+    if (upcomingBday) { 
+      setPopup(`              Happy Birthday ${upcomingBday.name}!`); 
+      setTimeout(() => setPopup(null), 3000); 
+    } 
+  }, [birthdays]); 
+  return ( 
+    <div className="app">      <h2>          Birthday Reminder</h2> 
+      {popup && <div className="popup">{popup}</div>} 
+      <div className="input-container"> 
+        <input type="text" placeholder="Enter Name" value={newName} onChange={(e) => 
+setNewName(e.target.value)} /> 
+        <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} 
+/> 
+        <button onClick={addBirthday}>Add Birthday</button> 
+      </div> 
+      <div className="birthday-list"> 
+        {birthdays.map((bday) => ( 
+          <div key={bday.id} className="birthday-item"> 
+            <span>{bday.name} - {bday.date}</span> 
+            <button onClick={() => 
+removeBirthday(bday.id)}>Remove</button>          </div>        ))}      </div> 
+      <button className="process-btn" onClick={processBirthdays}>Update 
+Birthdays</button> 
+    </div>  );}; 
+export default BirthdayReminder; 
+
+
+
+
+
